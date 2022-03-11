@@ -1,10 +1,11 @@
 #    ***// INSERT // UPDATE // ALTER***
 ---
+
 ##      ***INSERT***
----
+
 
 ###     **Implicit and Explicit inserts**
----
+
 Examples:
 
     Implicit:
@@ -19,8 +20,10 @@ Examples:
     insert into copy_d_clients(client_number,first_name,last_name,phone,email)
     values(6689,'Nick','Neuville',9048953049,'nnicky@harbor.net');
 
+---
+
 ###    **Multitable inserts**
---- 
+
     INSERT first
     WHEN salary > 20000
     THEN INTO special_sal values(employee_id,salary)
@@ -30,8 +33,10 @@ Examples:
     SELECT employee_id,hire_date,salary,manager_id
     FROM employees;
 
+--- 
+
 ###     **Insert specific columns from one table to another**
----
+
 Example:
 
     This is the created table:
@@ -47,11 +52,12 @@ Example:
     select employee_id,first_name,last_name,email from employees 
     where job_id like '%_REP%';
 
+---
+
 ##      ***ALTER***
 ---
 
 ###     **Alter/Modify table column types,constraints,defaults**
----
 
 Set a new datatype for the column:
 
@@ -77,13 +83,12 @@ Set and drop "unused" columns:
     (All the columns which were marked as "unused" are
      going to be dropped permanently, no rollback!)
 
-
+---
 
 ##    ***UPDATE***
 ---
 
 ###     **Change a specific column in a table**
----
 
 Normal:
 
@@ -105,10 +110,11 @@ If we want to update a field with the same value as another register:
     set manager_id=(select manager_id from copy_f_staffs where first_name = 'Sue' and last_name='Doe')
     where id=25;
 
-
+---
 
 #     ***// TABLE // VIEW // SEQUENCE //***
 ##     ***The 3 kinds of database objects***
+---
 
 #       ***TABLES***
 
@@ -150,24 +156,23 @@ being able to restore it or see it in the USER_RECYCLEBIN, then we have the opti
 
     DROP TABLE copy_employees PURGE;
 
-
 ---
 
 ###     **Eliminate a complete register (row) from a table.**
----
 
     delete from copy_f_staffs where id=25;
 
 
 ###     **Eliminate registers from a table which exists in another one.**
----
+
 
     delete from lesson7_emp 
     where employee_id in (select employee_id from job_history);
 
+---
 
 ##     Truncate tables
----
+
 Truncate tables means to remove every row from the given tables, which are not
 going to be able to be restored (released from the storage).
 Does exactly the same as the DELETE statement, but with DELETE we don't release the storage place, so later it can be restored.
@@ -179,6 +184,7 @@ Syntax:
 
 
 *Truncate is faster than DELETE, because it doesn't generate rollback information.*
+
 ---
 
 ## ***Merge one table into another.***
@@ -226,13 +232,13 @@ The comments can be queried from the: **USER_TAB_COMMENTS**
 
 Example:
 
-SELECT employee_id, first_name ||' '|| last_name as "NAME",
-    versions_operation AS "OPERATION"
-    versions_starttime AS "START_DATE",
-    versions_endtime AS "END_DATE", salary
-FROM employees
-    VERSIONS BETWEEN SCN MINVALUE AND MAXVALUE
-WHERE employee_id = 1;
+    SELECT employee_id, first_name ||' '|| last_name as "NAME",
+        versions_operation AS "OPERATION"
+        versions_starttime AS "START_DATE",
+        versions_endtime AS "END_DATE", salary
+    FROM employees
+        VERSIONS BETWEEN SCN MINVALUE AND MAXVALUE
+    WHERE employee_id = 1;
 
 ---
 
@@ -312,32 +318,35 @@ To check the sequences of the user, visit: USER_SEQUENCES table.
 
     SELECT * FROM USER_SEQUENCES;
 
+---
+
 ##      ***// NEXTVAL // CURRVAL //***
 ###     **Use of already created sequences**
 
 ###     **NEXTVAL:**
 
-->  When we reference NEXTVAL for the first time,
-    the initial value of the sequence will be returned.
+->  *When we reference NEXTVAL for the first time,
+    the initial value of the sequence will be returned.*
 
 Syntax example:
 
     INSERT INTO employees
         (employee_id, department_id,...)
     VALUES (employees_seq.NEXTVAL, dept_deptid_seq .CURRVAL, ...);
+
 ---
 
 ###     **CURRVAL:**
----
-->  Before CURRVAL can be referenced in a statement, there must be
+
+->  *Before CURRVAL can be referenced in a statement, there must be
     an already referenced NEXTVAL to initialize the "count" of the 
-    SEQUENCE.
+    SEQUENCE.*
 
     Syntax example:
-    INSERT INTO employees
-        (employee_id, department_id,...)
+
+    INSERT INTO employees (employee_id, department_id,...)
     VALUES (employees_seq.NEXTVAL, dept_deptid_seq .CURRVAL, ...);
----
+
  
 It is posible to view/check out the next value in a sequence by
 query it, in the USER_SEQUENCE.
@@ -346,6 +355,7 @@ SELECT sequence_name, min_value, max_value, last_number AS "Next number"
 FROM USER_SEQUENCES
 WHERE sequence_name = 'RUNNER_ID_SEQ';
 
+---
 
 ##     ***VIEWS***
 
@@ -367,11 +377,17 @@ create syntax:
 
 #     ***Data dictionary tables of the database system of Oracle***
 
-**USER_TABLES** describes the relational tables owned by the current user.
-Its columns(except for OWNER) are the same as those in ALL_TABLES.
+**USER_TABLES**:
 
-**USER_CATALOG** lists indexes, tables, views, clusters, synonyms and sequences owned by the current user. Its columns are the same as those in "ALL_CATALOG"
+    Describes the relational tables owned by the current user.
+    Its columns(except for OWNER) are the same as those in ALL_TABLES.
 
-**USER_OBJECTS** describes all objects owned by the current user. Its columns are the same
+    **USER_CATALOG**:
+
+    Lists indexes, tables, views, clusters, synonyms and sequences owned by the current user. Its columns are the same as those in "ALL_CATALOG"
+
+**USER_OBJECTS**:
+   
+     Describes all objects owned by the current user. Its columns are the same
    as those in "ALL_OBJECTS".
 ---
