@@ -393,6 +393,5 @@ create syntax:
 
 **USER_OBJECTS**:
    
-     Describes all objects owned by the current user. Its columns are the same
-   as those in "ALL_OBJECTS".
+     Describes all objects owned by the current user. Its columns are the same     as those in "ALL_OBJECTS".
 ---
