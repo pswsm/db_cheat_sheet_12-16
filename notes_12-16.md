@@ -117,6 +117,7 @@ If we want to update a field with the same value as another register:
 ---
 
 #       ***TABLES***
+---
 
 ##      ***CREATE TABLE***
 ---
@@ -130,9 +131,11 @@ Alter the current START_DATE column attributes using:
 
     ALTER TABLE copy_f_promotional_menus
     MODIFY(start_date DATE DEFAULT SYSDATE);
+
 ---
 
 ##      ***DELETE TABLE***
+---
 
 ###     **Drop tables/delete tables**
 
@@ -140,41 +143,41 @@ Syntax:
 
     DROP TABLE <tablename>;
 
-If a table has been dropped by mistake, then we have the option to bring them back
-with:
+*If a table has been dropped by mistake, then we have the option to bring them back with:*
    
-
  
     FLASHBACK TABLE tablename TO BEFORE DROP;
 
 
 To check which tables can be restored, visit: **"USER_RECYCLEBIN"**.
 
-If for any security reasons we want to delete/drop a table permanently, without
-being able to restore it or see it in the USER_RECYCLEBIN, then we have the option with:
+*If for any security reasons we want to delete/drop a table permanently, without being able to restore it or see it in the USER_RECYCLEBIN, then we have the option with:*
     
 
     DROP TABLE copy_employees PURGE;
+
 
 ---
 
 ###     **Eliminate a complete register (row) from a table.**
 
-    delete from copy_f_staffs where id=25;
+    DELETE FROM copy_f_staffs WHERE id=25;
 
+---
 
 ###     **Eliminate registers from a table which exists in another one.**
 
 
-    delete from lesson7_emp 
-    where employee_id in (select employee_id from job_history);
+    DELETE FROM lesson7_emp 
+    WHERE employee_id IN (select employee_id from job_history);
 
 ---
 
-##     Truncate tables
+##     **Truncate tables**
+---
 
-Truncate tables means to remove every row from the given tables, which are not
-going to be able to be restored (released from the storage).
+Truncate tables means to remove every row from the given tables, which are notgoing to be able to be restored (released from the storage).
+
 Does exactly the same as the DELETE statement, but with DELETE we don't release the storage place, so later it can be restored.
 
 Syntax:
@@ -229,6 +232,7 @@ The comments can be queried from the: **USER_TAB_COMMENTS**
 ---
 
 ##     **FLASHBACK QUERY / check out previous versions at INSERT,UPDATE,DELETE**
+---
 
 Example:
 
@@ -376,6 +380,7 @@ create syntax:
 ---
 
 #     ***Data dictionary tables of the database system of Oracle***
+---
 
 **USER_TABLES**:
 
