@@ -6,6 +6,8 @@
 create table copy_[tableName] as (select * from [tablename])
 ```
 
+[TOC]
+
 ##  INSERT
 Oracle:  DP-12-1
 ### Implicit
