@@ -1,68 +1,111 @@
-#    ***// INSERT // UPDATE // ALTER***
+# SQL Cheatsheet
 ---
 
-##      ***INSERT***
+**Remember to copy tables before modifying:**
+```sql
+create table copy_[tableName] as (select * from [tablename])
+```
+
+##  INSERT
+Oracle:  DP-12-1
+### Implicit
+
+Inserts data into a table. Like python's ```list.append()```.
+
+Implicit ```insert``` syntax:
+```sql
+insert into [table_name] values(a, b, 'c', ...)
+```
+These values must be same datatype and in the same order as columns of the table.
+See Oracle Academy DP-12-1, Slides 12-13
+
+Example, suppose table name ```departments```:
+
+|DEPARTMENT_ID|DEPARTMENT_NAME|MANAGER_ID|LOCATION_ID|
+|-------------|---------------|----------|-----------|
+|type: number|type: varchar2|type: number|type: number|
 
 
-###     **Implicit and Explicit inserts**
+```sql
+insert into departments values(52,'Sales', 500, 12); --OK
+insert into departments values(53,'Legal', '200', 12); --Error: 200 is varchar2 not number
+```
+---
+### Explicit
 
-Examples:
+Explicit ``insert`` syntax:
+```sql
+insert into [table_name] ([col_names])
+values (a, b, 'c', ...)
 
-    Implicit:
-    insert into copy_d_songs values(52,'Surfing Summer','Not known','',12);
-    insert into copy_d_songs values(53,'Victory Victory','5 min','',12);
+```
 
+Example, suppose table name ```departments```:
 
-    Explicit:
-    insert into copy_d_clients(client_number,first_name,last_name,phone,email)
-    values(6655,'Ayako','Dahish',3608859030,'dahisha@harbor.net');
+|DEPARTMENT_ID|DEPARTMENT_NAME|MANAGER_ID|LOCATION_ID|
+|-------------|---------------|----------|-----------|
+|type: number|type: varchar2|type: number|type: number|
 
-    insert into copy_d_clients(client_number,first_name,last_name,phone,email)
-    values(6689,'Nick','Neuville',9048953049,'nnicky@harbor.net');
-
+```sql
+Explicit:
+insert into departments (department_id, department_name, manager_id, location_id)
+values(12,'Sales', 500, 12);
+```
 ---
 
-###    **Multitable inserts**
+### Multitable
 
-    INSERT first
-    WHEN salary > 20000
-    THEN INTO special_sal values(employee_id,salary)
-    ELSE
-    INTO sal_history values(employee_id, hire_date,salary)
-    INTO mgr_history values(employee_id,manager_id,salary)
-    SELECT employee_id,hire_date,salary,manager_id
-    FROM employees;
+```sql
+INSERT first
+WHEN salary > 20000
+THEN INTO special_sal values(employee_id,salary)
+ELSE
+INTO sal_history values(employee_id, hire_date,salary)
+INTO mgr_history values(employee_id,manager_id,salary)
+SELECT employee_id,hire_date,salary,manager_id
+FROM employees;
+```
 
 --- 
 
 ###     **Insert specific columns from one table to another**
 
 Example:
-
-    This is the created table:
-
-    create table rep_email (
-    id number(3) constraint rel_id_pk primary key,
-    first_name varchar2(15),
-    last_name varchar2(15),
-    email_address varchar2(15)
-    );
-
-    insert into rep_email(id,first_name,last_name,email_address)
-    select employee_id,first_name,last_name,email from employees 
-    where job_id like '%_REP%';
-
+```sql
+insert into rep_email(id,first_name,last_name,email_address)
+select employee_id,first_name,last_name,email from employees 
+where job_id like '%_REP%';
+```
+We use a subquery within the insert to select the rows to be copied.
+Obviously, both must have the same data types and number of columns.
 ---
 
-##      ***ALTER***
----
+##  ALTER
+Oracle: DP-13-3
+Changes the structure of the table. Must not be confused with ```update```.
+### Alter table column types,constraints,defaults
+Add Column:
+```sql
+alter table [table_name]
+add ([new_column_name] [data_type] [[default] expression])
+```
 
-###     **Alter/Modify table column types,constraints,defaults**
+Example:
+```sql
+-- With Default
+alter table departments
+add (min_dept_salary number(6) default 1500) -- Already exisiting rows will have 1500 as the value for this column
 
-Set a new datatype for the column:
+-- Without Default
+alter table departments
+add (min_dept_salary number(6)) -- Already existing rows will have null as the value for this column
+```
 
-    alter table rep_email
-      modify email_address varchar2(15);
+Set a new datatype for the column, only if all calues are null:
+```sql
+alter table rep_email
+modify email_address varchar2(15);
+```
 
 Set a default value for the column:
 
@@ -84,11 +127,8 @@ Set and drop "unused" columns:
      going to be dropped permanently, no rollback!)
 
 ---
-
-##    ***UPDATE***
----
-
-###     **Change a specific column in a table**
+##  UPDATE
+### Change a specific column in a table
 
 Normal:
 
